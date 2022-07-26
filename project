@@ -1,0 +1,199 @@
+#!/bin/bash
+echo "-----------------------------WELCOME----------------------------------------"
+echo "**********************MADE BY BASEL MOHAMED*********************************"
+echo "---------------------- BASH SCRIPT PROJECT ---------------------------------"
+
+
+#font coloring
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+clear='\033[0m'
+
+
+#font type
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+
+#echo "this is ${bold}bold${normal} but this isn't"
+printf "${GREEN}${bold}MANAGE USERS & GROUPS${normal}${clear}\n"
+
+
+echo "	
+	
+	
+	 ____           _____ ______ _        __  __  ____  _    _          __  __ ______ _____  
+	|  _ \   /\    / ____|  ____| |      |  \/  |/ __ \| |  | |   /\   |  \/  |  ____|  __ \ 
+	| |_) | /  \  | (___ | |__  | |      | \  / | |  | | |__| |  /  \  | \  / | |__  | |  | |
+	|  _ < / /\ \  \___ \|  __| | |      | |\/| | |  | |  __  | / /\ \ | |\/| |  __| | |  | |
+	| |_) / ____ \ ____) | |____| |____  | |  | | |__| | |  | |/ ____ \| |  | | |____| |__| |
+	|____/_/    \_\_____/|______|______| |_|  |_|\____/|_|  |_/_/    \_\_|  |_|______|_____/ 
+	
+	
+	
+	"
+
+loop=1
+while [ $loop -eq 1 ]
+do
+
+echo "Select Operation to excute :"
+echo "1 - ADD USER"
+echo "2 - GET USER DETAILS"
+echo "3 - DELETE USER"
+echo "4 - DISABLE USER ACCOUNT"
+echo "5 - ENABLE USER ACCOUNT"
+echo "6 - ADD GROUP"
+echo "7 - DELETE GROUP"
+echo "8 - MODIFY GROUP"
+echo "9 - EXIT"
+
+read op
+
+case $op in
+1)
+#add new user
+	echo "PLEASE ENTER USERNAME TO ADD: "
+	read un
+	echo "ENTER ID (OPTIONAL) DEFAULT (EMPTY): "
+	read id
+	grep $un /etc/passwd
+		if [ $# -lt 0 ]
+		then 
+			echo "USER ALREADY EXSIST!!"
+		else
+			if [ id -lt 0 ]
+			then
+				#adduser $un -uid $id
+				adduser $un -u $id
+			else
+				adduser $un
+			fi
+			id $un
+		fi
+		printf "${GREEN}${bold}SUCCESS${normal}${clear}\n"
+;;
+2)
+#get user details
+	echo "PLEASE ENTER USERNAME TO GET DETAILS: "
+	read un
+	grep $un /etc/passwd
+		if [ $# -lt 0 ]
+		then 
+			printf "${RED}${bold}USER IS NOT EXISTED${normal}${clear}\n"
+		else
+			id $un
+			echo "-------------"
+			#who -u $un
+			echo "-------------"
+			#echo "SUCCESS"
+			printf "${GREEN}${bold}SUCCESS${normal}${clear}\n"
+		fi
+;;
+3)
+#delete users
+	echo "PLEASE ENTER USERNAME TO DELETE: "
+	read un
+	grep $un /etc/passwd
+		if [ $# -eq 0 ]
+		then 
+			echo "1 - KEEP DATA OR 2 - DELETE DATA!!"
+			read ch
+			if [ $ch -eq 1 ]
+			then
+				userdel $un
+				printf "${GREEN}${bold}SUCCESS${normal}${clear}\n"
+			else
+				userdel -r $un
+				#deluser --remove-all-files $un
+				printf "${GREEN}${bold}SUCCESS${normal}${clear}\n"
+			fi
+		else
+			printf "${RED}${bold}USER IS NOT EXISTED${normal}${clear}\n"
+		fi
+;;
+4)
+#disable user
+	echo "PLEASE ENTER USERNAME TO DISABLE: "
+	read un
+	grep $un /etc/passwd
+		if [ $? -lt 0 ]
+		then 
+			printf "${RED}${bold}USER IS NOT EXISTED${normal}${clear}\n"
+		else
+			passwd -l $un
+			printf "${GREEN}${bold}SUCCESS${normal}${clear}\n"
+		fi
+;;
+5)
+#enable user
+	echo "PLEASE ENTER USERNAME TO ENABLE: "
+	read un
+	grep $un /etc/passwd
+		if [ $? -lt 0 ]
+		then 
+			printf "${RED}${bold}USER IS NOT EXISTED${normal}${clear}\n"
+		else
+			passwd -u $un
+			printf "${GREEN}${bold}SUCCESS${normal}${clear}\n"
+		fi
+;;
+6)
+#add group 
+	echo "PLEASE ENTER GROUP NAME TO ADD: "
+	read gn
+	grep $gn /etc/passwd
+		if [ $? -lt 0 ]
+		then 
+			echo "GROUP ALREADY EXISTED"
+		else
+			groupadd $gn
+			printf "${GREEN}${bold}SUCCESS${normal}${clear}\n"
+		fi
+;;
+7)
+#delete group
+	echo "PLEASE ENTER GROUP NAME TO DELETE: "
+	read gn
+	grep $gn /etc/passwd
+		if [ $? -lt 0 ]
+		then 
+			printf "${RED}${bold}GROUP IS NOT EXISTED${normal}${clear}\n"
+		else
+			groupdel $gn
+			printf "${GREEN}${bold}SUCCESS${normal}${clear}\n"
+		fi
+;;
+8)
+#modify group (add/delete users)
+	echo "PLEASE ENTER GROUP NAME TO MODIFY: "
+	read gn
+	grep $gn /etc/passwd
+		if [ $? -lt 0 ]
+		then 
+			printf "${RED}${bold}GROUP IS NOT EXISTED${normal}${clear}\n"
+		else
+			echo "1 - ADD USER TO GROUP 2 - DELETE USER FROM GROUP"
+			read ch
+			echo "PLEASE ENTER USERNAME TO ADD/DELETE: "
+			read user
+			if [ $ch -eq 1 ]
+			then
+				usermod -a -G $gn $user
+				printf "${GREEN}${bold}SUCCESS${normal}${clear}\n"
+			else
+				gpasswd -d $user $gn
+				printf "${GREEN}${bold}SUCCESS${normal}${clear}\n"
+			fi
+		fi
+;;
+9)
+	echo "EXITING..."
+	loop=0
+;;
+*)
+	printf "${RED}${bold}PLEASE ENTER A VAILD INPUT!!!: ${normal}${clear}\n"
+;;
+esac
+done
+echo "==============================================================================="
