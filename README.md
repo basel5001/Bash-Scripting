@@ -1,3 +1,5 @@
+![Lint](https://github.com/basel5001/Bash-Scripting/actions/workflows/lint.yml/badge.svg)
+
 # Bash Scripting
 
 Interactive bash script for managing Linux users and groups.
